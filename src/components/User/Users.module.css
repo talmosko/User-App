@@ -1,9 +1,13 @@
 .users__main-grid
 {
     display: grid;
-    width: 50%;
-    height: 100%;
-    align-items: center;
-
+    max-width: 55rem;
+    margin: 2rem ;
+    padding: 1rem;
     grid-template-columns: 1fr 1fr;
+}
+
+.users__actions
+{
+    /* position: fixed; top: 2rem; left: 35rem;  */
 }

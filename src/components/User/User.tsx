@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import Button from "../UI/Button";
 import Card from "../UI/Card";
 import Input from "../UI/Input";
@@ -24,7 +24,8 @@ const User: React.FC<IUserProps> = ({
   const zipcodeInputRef = useRef<HTMLInputElement>(null);
   console.log(userData);
 
-  const updateUserHandler = () => {
+  const updateUserHandler = (event: React.FormEvent) => {
+    event.preventDefault();
     //get the updated user data from refs
     const updatedUserData = {
       ...userData,
@@ -46,11 +47,12 @@ const User: React.FC<IUserProps> = ({
     updateHandler(updatedUserData);
   };
 
-  const deleteUserHandler = () => {
+  const deleteUserHandler = (e: React.MouseEvent) => {
+    e.preventDefault();
     deleteHandler(userData.id);
   };
   const UserOtherData = (
-    <Card>
+    <Card className="card--small">
       <Input
         ref={streetInputRef}
         label="Street"
@@ -84,31 +86,41 @@ const User: React.FC<IUserProps> = ({
   return (
     <Card>
       <p> ID: {userData.id}</p>
-      <Input
-        ref={nameInputRef}
-        label="Name"
-        input={{ type: "text", id: "Name", defaultValue: userData.name }}
-      />
-      <Input
-        ref={emailInputRef}
-        label="Email"
-        input={{ type: "text", id: "Email", defaultValue: userData.email }}
-      />
-      <Button
-        button={{
-          className: "other-data__button",
-          onMouseOver: () => setPresentOtherData(true),
-          onClick: () => setPresentOtherData(false),
-        }}
-      >
-        {"Other Data"}
-      </Button>
-      {presentOtherData && UserOtherData}
+      <form className={classes["user__form"]} onSubmit={updateUserHandler}>
+        <Input
+          ref={nameInputRef}
+          label="Name"
+          input={{ type: "text", id: "Name", defaultValue: userData.name }}
+        />
+        <Input
+          ref={emailInputRef}
+          label="Email"
+          input={{ type: "text", id: "Email", defaultValue: userData.email }}
+        />
+        <div className="user__other-data">
+          <Button
+            button={{
+              className: "button--other-data",
+              onMouseOver: (e) => {
+                e.preventDefault;
+                setPresentOtherData(true);
+              },
+              onClick: (e) => {
+                e.preventDefault();
+                setPresentOtherData(false);
+              },
+            }}
+          >
+            Other Data
+          </Button>
+          {presentOtherData && UserOtherData}
 
-      <div className={classes["user-actions"]}>
-        <Button button={{ onClick: updateUserHandler }}>{"Update"}</Button>
-        <Button button={{ onClick: deleteUserHandler }}>{"Delete"}</Button>
-      </div>
+          <div className={"form-actions"}>
+            <Button button={{ type: "submit" }}>Update</Button>
+            <Button button={{ onClick: deleteUserHandler }}>Delete</Button>
+          </div>
+        </div>
+      </form>
     </Card>
   );
 };

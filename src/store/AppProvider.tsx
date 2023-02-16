@@ -1,7 +1,7 @@
 import { Dispatch } from "react";
 import AppContext, { IAppContext } from "./app-context";
 import { useReducer } from "react";
-import { PostType, TodoType, UserType } from "./types";
+import { InsertedUserType, PostType, TodoType, UserType } from "./types";
 
 /* REDUCER */
 export interface IReducerState {
@@ -13,6 +13,10 @@ export interface IReducerState {
 }
 
 type TReducerAction =
+  | {
+      type: "ADD_USER";
+      user: InsertedUserType;
+    }
   | {
       type: "UPDATE_USER";
       user: UserType;
@@ -30,6 +34,23 @@ const appReducer = (
   state: IReducerState,
   action: TReducerAction
 ): IReducerState => {
+  if (action.type === "ADD_USER") {
+    const newUser: UserType = {
+      ...action.user,
+      id: state.users.length + 1,
+      address: {
+        street: "",
+        city: "",
+        zipcode: "",
+      },
+    };
+    return {
+      ...state,
+      users: [...state.users, newUser],
+      modalMessage: "User Added",
+    };
+  }
+
   if (action.type === "UPDATE_USER") {
     const updatedUsers = state.users.map((user) => {
       if (user.id === action.user.id) {
@@ -106,12 +127,17 @@ const AppProvider: React.FC<AppProviderProps> = (props) => {
     dispatchAction({ type: "MODAL_MESSAGE", message });
   };
 
+  const addUserHandler = (user: InsertedUserType) => {
+    dispatchAction({ type: "ADD_USER", user });
+  };
+
   const appContext = {
     ...currentState,
     updateUser: updateUserHandler,
     deleteUser: deleteUserHandler,
     closeModal: closeModalHandler,
     setModalMessage: modalMessageHandler,
+    addUser: addUserHandler,
   };
   return (
     <AppContext.Provider value={appContext}>

@@ -1,12 +1,13 @@
 import React from "react";
 import { IReducerState } from "./AppProvider";
-import { PostType, TodoType, UserType } from "./types";
+import { InsertedUserType, PostType, TodoType, UserType } from "./types";
 
 export interface IAppContext extends IReducerState {
   updateUser: (user: UserType) => void;
   deleteUser: (id: number) => void;
   closeModal: () => void;
   setModalMessage: (message: string) => void;
+  addUser(user: InsertedUserType): void;
 }
 
 const AppContext: React.Context<IAppContext> = React.createContext({
@@ -18,6 +19,7 @@ const AppContext: React.Context<IAppContext> = React.createContext({
   updateUser: (user: UserType) => {},
   deleteUser: (id: number) => {},
   closeModal: () => {},
+  addUser: (user: InsertedUserType) => {},
   setModalMessage: (message: string) => {},
 } as IAppContext);
 

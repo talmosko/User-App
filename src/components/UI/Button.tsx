@@ -1,11 +1,12 @@
+import React from "react";
 import classes from "./Button.module.css";
 interface ButtonProps {
   children?: React.ReactNode;
   button?: {
     type?: "button" | "submit" | "reset";
-    className?: "other-data__button";
-    onMouseOver?: () => void;
-    onClick?: () => void;
+    className?: "button--other-data";
+    onMouseOver?: (e: React.MouseEvent) => void;
+    onClick?: (e: React.MouseEvent) => void;
   };
 }
 const Button: React.FC<ButtonProps> = ({ children, button }) => {

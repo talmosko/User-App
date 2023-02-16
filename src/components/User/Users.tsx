@@ -1,25 +1,39 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AppContext from "../../store/app-context";
 import Button from "../UI/Button";
 import AddUser from "./AddUser";
 import User from "./User";
 import classes from "./Users.module.css";
 const Users: React.FC = () => {
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
   const appContext = useContext(AppContext);
-  //for each user
+  const usersCards = appContext.users.map((user) => {
+    return (
+      <User
+        key={user.id}
+        userData={user}
+        updateHandler={appContext.updateUser}
+        deleteHandler={appContext.deleteUser}
+      />
+    );
+  });
 
   return (
     <div className={classes["users__main-grid"]}>
       <div className={classes["users__details"]}>
-        <div className="main-actions"></div>
-        <User
-          userData={appContext.users[0]}
-          updateHandler={appContext.updateUser}
-          deleteHandler={appContext.deleteUser}
-        />
+        <div className="main-actions">
+          <Button button={{ onClick: () => setShowAddUserForm(true) }}>
+            Add User
+          </Button>
+        </div>
+        {usersCards}
       </div>
       <div className={classes["users__actions"]}>
-        <AddUser />
+        {showAddUserForm && (
+          <AddUser afterSendHandler={() => setShowAddUserForm(false)} />
+        )}
+        {/* <Todo />
+        <Post /> */}
       </div>
     </div>
   );

@@ -1,20 +1,40 @@
 
-.input {
-    display: flex;
+.form-control {
+    display: inline-grid;
+    grid-template-areas: 'label input' 'error error';
+     ;
+    gap: 0.5px;
     align-items: center;
     margin-bottom: 0.5rem;
   }
   
-  .input label {
+  .form-control label {
+    grid-area: label;
     font-weight: bold;
     margin-right: 1rem;
     min-width: 4.2rem;
   }
   
-  .input input {
+  .form-control input {
+    grid-area: input;
     border-radius: 5px;
     border: 1px solid #ccc;
     font: inherit;
     padding-left: 0.5rem;
     min-width: 20%;
+  }
+
+  .invalid input {
+    border-color: red;
+  }
+
+  .invalid label ,.error-text {
+    color: red;
+  }
+
+  .error-text {
+    grid-area: error;
+    display: block;
+    font-size: 0.8rem;
+    margin: 0;
   }
