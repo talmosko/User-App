@@ -1,18 +1,17 @@
 import { Dispatch } from "react";
-import AppContext, { IAppContext } from "./app-context";
+import AppContext, { IDataContext, IDataReducerState } from "./data-context";
 import { useReducer } from "react";
-import { InsertedUserType, PostType, TodoType, UserType } from "./types";
+import {
+  InsertedTodoType,
+  InsertedUserType,
+  PostType,
+  TodoType,
+  UserType,
+} from "./types";
 
 /* REDUCER */
-export interface IReducerState {
-  users: UserType[];
-  todos: TodoType[];
-  posts: PostType[];
-  updateError: Error | undefined;
-  modalMessage: string | undefined;
-}
 
-type TReducerAction =
+type TDataReducerAction =
   | {
       type: "ADD_USER";
       user: InsertedUserType;
@@ -25,15 +24,12 @@ type TReducerAction =
       type: "DELETE_USER";
       id: number;
     }
-  | {
-      type: "CLOSE_MODAL";
-    }
-  | { type: "MODAL_MESSAGE"; message: string };
+  | { type: "ADD_TODO"; todo: InsertedTodoType };
 
-const appReducer = (
-  state: IReducerState,
-  action: TReducerAction
-): IReducerState => {
+const dataReducer = (
+  state: IDataReducerState,
+  action: TDataReducerAction
+): IDataReducerState => {
   if (action.type === "ADD_USER") {
     const newUser: UserType = {
       ...action.user,
@@ -47,7 +43,7 @@ const appReducer = (
     return {
       ...state,
       users: [...state.users, newUser],
-      modalMessage: "User Added",
+      updateMessage: new String("User Added"),
     };
   }
 
@@ -58,7 +54,11 @@ const appReducer = (
       }
       return user;
     });
-    return { ...state, users: updatedUsers, modalMessage: "User Updated" };
+    return {
+      ...state,
+      users: updatedUsers,
+      updateMessage: new String("User Updated"),
+    };
   }
 
   if (action.type === "DELETE_USER") {
@@ -67,16 +67,23 @@ const appReducer = (
       ...state,
       users: updatedUsers,
       updateError: undefined,
-      modalMessage: "User Deleted",
+      updateMessage: new String("User Deleted"),
     };
   }
-  if (action.type === "MODAL_MESSAGE") {
-    return { ...state, modalMessage: action.message };
+
+  if (action.type === "ADD_TODO") {
+    const newTodo: TodoType = {
+      ...action.todo,
+      id: state.todos.length + 1,
+      completed: false,
+    };
+    return {
+      ...state,
+      todos: [...state.todos, newTodo],
+      updateMessage: new String("Todo Added"),
+    };
   }
 
-  if (action.type === "CLOSE_MODAL") {
-    return { ...state, updateError: undefined, modalMessage: undefined };
-  }
   return state;
 };
 
@@ -98,18 +105,18 @@ const defaultState = {
   todos: [],
   posts: [],
   updateError: undefined,
-  modalMessage: undefined,
+  updateMessage: undefined,
 };
 
-type AppProviderProps = {
+type DataProviderProps = {
   children: React.ReactNode;
 };
 
-const AppProvider: React.FC<AppProviderProps> = (props) => {
+const DataProvider: React.FC<DataProviderProps> = (props) => {
   const [currentState, dispatchAction]: [
-    IReducerState,
-    Dispatch<TReducerAction>
-  ] = useReducer(appReducer, defaultState);
+    IDataReducerState,
+    Dispatch<TDataReducerAction>
+  ] = useReducer(dataReducer, defaultState);
 
   const updateUserHandler = (user: UserType) => {
     dispatchAction({ type: "UPDATE_USER", user });
@@ -119,25 +126,19 @@ const AppProvider: React.FC<AppProviderProps> = (props) => {
     dispatchAction({ type: "DELETE_USER", id });
   };
 
-  const closeModalHandler = () => {
-    dispatchAction({ type: "CLOSE_MODAL" });
-  };
-
-  const modalMessageHandler = (message: string) => {
-    dispatchAction({ type: "MODAL_MESSAGE", message });
-  };
-
   const addUserHandler = (user: InsertedUserType) => {
     dispatchAction({ type: "ADD_USER", user });
   };
 
+  const addTodoHandler = (todo: InsertedTodoType) => {
+    dispatchAction({ type: "ADD_TODO", todo });
+  };
   const appContext = {
     ...currentState,
     updateUser: updateUserHandler,
     deleteUser: deleteUserHandler,
-    closeModal: closeModalHandler,
-    setModalMessage: modalMessageHandler,
     addUser: addUserHandler,
+    addTodo: addTodoHandler,
   };
   return (
     <AppContext.Provider value={appContext}>
@@ -146,4 +147,4 @@ const AppProvider: React.FC<AppProviderProps> = (props) => {
   );
 };
 
-export default AppProvider;
+export default DataProvider;

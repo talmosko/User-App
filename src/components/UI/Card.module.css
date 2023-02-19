@@ -10,3 +10,12 @@
     padding: 1rem;
 
   }
+
+.card--user{
+  cursor: pointer;
+}
+
+.card--chosen-user
+{
+    background-color: #eeedc6;
+}

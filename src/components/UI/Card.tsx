@@ -2,6 +2,7 @@ import classes from "./Card.module.css";
 interface CardProps {
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;
 }
 const Card: React.FC<CardProps> = (props) => {
   return (
@@ -9,6 +10,7 @@ const Card: React.FC<CardProps> = (props) => {
       className={`${classes.card} ${
         props.className && classes[props.className]
       }`}
+      onClick={props.onClick}
     >
       {props.children}
     </div>

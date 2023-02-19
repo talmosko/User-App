@@ -3,18 +3,22 @@ import Button from "../UI/Button";
 import Card from "../UI/Card";
 import Input from "../UI/Input";
 import classes from "./User.module.css";
-import AppContext from "../../store/app-context";
+import AppContext from "../../store/data-context";
 import { UserType } from "../../store/types";
 
 interface IUserProps {
   userData: UserType;
   updateHandler: (userData: UserType) => void;
   deleteHandler: (id: number) => void;
+  chooseUserHandler: () => void;
+  isChosen: boolean;
 }
 const User: React.FC<IUserProps> = ({
   userData,
   updateHandler,
   deleteHandler,
+  chooseUserHandler,
+  isChosen,
 }) => {
   const [presentOtherData, setPresentOtherData] = useState(false);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -22,7 +26,6 @@ const User: React.FC<IUserProps> = ({
   const streetInputRef = useRef<HTMLInputElement>(null);
   const cityInputRef = useRef<HTMLInputElement>(null);
   const zipcodeInputRef = useRef<HTMLInputElement>(null);
-  console.log(userData);
 
   const updateUserHandler = (event: React.FormEvent) => {
     event.preventDefault();
@@ -52,7 +55,7 @@ const User: React.FC<IUserProps> = ({
     deleteHandler(userData.id);
   };
   const UserOtherData = (
-    <Card className="card--small">
+    <Card>
       <Input
         ref={streetInputRef}
         label="Street"
@@ -84,20 +87,23 @@ const User: React.FC<IUserProps> = ({
   );
 
   return (
-    <Card>
-      <p> ID: {userData.id}</p>
+    <Card className={isChosen ? "card--chosen-user" : "card--user"}>
       <form className={classes["user__form"]} onSubmit={updateUserHandler}>
-        <Input
-          ref={nameInputRef}
-          label="Name"
-          input={{ type: "text", id: "Name", defaultValue: userData.name }}
-        />
-        <Input
-          ref={emailInputRef}
-          label="Email"
-          input={{ type: "text", id: "Email", defaultValue: userData.email }}
-        />
-        <div className="user__other-data">
+        <div className="user__data" onClick={chooseUserHandler}>
+          <p> ID: {userData.id}</p>
+
+          <Input
+            ref={nameInputRef}
+            label="Name"
+            input={{ type: "text", id: "Name", defaultValue: userData.name }}
+          />
+          <Input
+            ref={emailInputRef}
+            label="Email"
+            input={{ type: "text", id: "Email", defaultValue: userData.email }}
+          />
+        </div>
+        <div className="user__other-data" onClick={chooseUserHandler}>
           <Button
             button={{
               className: "button--other-data",
@@ -114,11 +120,10 @@ const User: React.FC<IUserProps> = ({
             Other Data
           </Button>
           {presentOtherData && UserOtherData}
-
-          <div className={"form-actions"}>
-            <Button button={{ type: "submit" }}>Update</Button>
-            <Button button={{ onClick: deleteUserHandler }}>Delete</Button>
-          </div>
+        </div>
+        <div className={"form-actions"} onClick={() => {}}>
+          <Button button={{ type: "submit" }}>Update</Button>
+          <Button button={{ onClick: deleteUserHandler }}>Delete</Button>
         </div>
       </form>
     </Card>

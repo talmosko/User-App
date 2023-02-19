@@ -11,6 +11,13 @@ export interface UserType extends InsertedUserType {
   };
 }
 
-export type TodoType = {};
+export interface InsertedTodoType {
+  title: string;
+  userId: number;
+}
+export type TodoType = {
+  id: number;
+  completed: boolean;
+};
 
 export type PostType = {};

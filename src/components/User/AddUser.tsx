@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import AppContext from "../../store/app-context";
+import AppContext from "../../store/data-context";
 import Button from "../UI/Button";
 import Card from "../UI/Card";
 import Input from "../UI/Input";
@@ -21,10 +21,10 @@ const validateEmail = (email: string) => {
 };
 
 interface IAddUserProps {
-  afterSendHandler: () => void;
+  resetHandler: () => void;
 }
 
-const AddUser: React.FC<IAddUserProps> = ({ afterSendHandler }) => {
+const AddUser: React.FC<IAddUserProps> = ({ resetHandler }) => {
   const nameState = useInput(validateName, "Please enter a valid name");
   const emailState = useInput(validateEmail, "Please enter a valid email");
   const appContext = useContext(AppContext);
@@ -59,7 +59,7 @@ const AddUser: React.FC<IAddUserProps> = ({ afterSendHandler }) => {
       appContext.addUser(userData);
       resetNameInput();
       resetEmailInput();
-      afterSendHandler();
+      resetHandler();
     } else return;
   };
 
@@ -89,7 +89,9 @@ const AddUser: React.FC<IAddUserProps> = ({ afterSendHandler }) => {
 
           <div className="form-actions">
             <Button button={{ type: "submit" }}>Add User</Button>
-            <Button button={{ type: "button" }}>Cancel</Button>
+            <Button button={{ type: "button", onClick: resetHandler }}>
+              Cancel
+            </Button>
           </div>
         </form>
       </Card>

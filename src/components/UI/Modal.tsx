@@ -1,5 +1,6 @@
 import { MouseEventHandler, ReactElement } from "react";
 import ReactDOM from "react-dom";
+import Button from "./Button";
 import classes from "./Modal.module.css";
 
 type BackdropProps = {
@@ -12,12 +13,16 @@ const Backdrop: React.FC<BackdropProps> = (props) => {
 
 type ModalOverlayProps = {
   children: React.ReactNode;
+  onClose: (e: React.MouseEvent) => void;
 };
 
 const ModalOverlay: React.FC<ModalOverlayProps> = (props) => {
   return (
     <div className={classes.modal}>
-      <div className={classes.content}>{props.children}</div>
+      {props.children}
+      <div className="form-actions">
+        <Button button={{ onClick: props.onClose }}>Close</Button>
+      </div>
     </div>
   );
 };
@@ -37,7 +42,7 @@ const Modal: React.FC<ModalProps> = (props) => {
         portalElement
       )}
       {ReactDOM.createPortal(
-        <ModalOverlay>{props.children}</ModalOverlay>,
+        <ModalOverlay onClose={props.onClose}>{props.children}</ModalOverlay>,
         portalElement
       )}
     </>

@@ -1,11 +1,20 @@
 import { useContext, useState } from "react";
-import AppContext from "../../store/app-context";
+import useUsersAction from "../../hooks/use-users-action";
+import AppContext from "../../store/data-context";
+import AddTodo from "../Todo/AddTodo";
 import Button from "../UI/Button";
 import AddUser from "./AddUser";
 import User from "./User";
 import classes from "./Users.module.css";
 const Users: React.FC = () => {
-  const [showAddUserForm, setShowAddUserForm] = useState(false);
+  const {
+    chosenUserId,
+    isAddUserAction,
+    chooseUserHandler,
+    promptAddUserHandler,
+    resetHandler,
+  } = useUsersAction();
+
   const appContext = useContext(AppContext);
   const usersCards = appContext.users.map((user) => {
     return (
@@ -13,7 +22,12 @@ const Users: React.FC = () => {
         key={user.id}
         userData={user}
         updateHandler={appContext.updateUser}
-        deleteHandler={appContext.deleteUser}
+        deleteHandler={(id: number) => {
+          appContext.deleteUser(id);
+          resetHandler();
+        }}
+        chooseUserHandler={chooseUserHandler.bind(null, user.id)}
+        isChosen={chosenUserId === user.id}
       />
     );
   });
@@ -22,18 +36,22 @@ const Users: React.FC = () => {
     <div className={classes["users__main-grid"]}>
       <div className={classes["users__details"]}>
         <div className="main-actions">
-          <Button button={{ onClick: () => setShowAddUserForm(true) }}>
+          <Button
+            button={{
+              onClick: () =>
+                !isAddUserAction ? promptAddUserHandler() : resetHandler(),
+            }}
+          >
             Add User
           </Button>
         </div>
         {usersCards}
       </div>
       <div className={classes["users__actions"]}>
-        {showAddUserForm && (
-          <AddUser afterSendHandler={() => setShowAddUserForm(false)} />
+        {isAddUserAction && <AddUser resetHandler={resetHandler} />}
+        {!isAddUserAction && chosenUserId !== -1 && (
+          <AddTodo userId={chosenUserId} resetHandler={() => resetHandler} />
         )}
-        {/* <Todo />
-        <Post /> */}
       </div>
     </div>
   );
