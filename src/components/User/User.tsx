@@ -4,82 +4,84 @@ import Card from "../UI/Card";
 import Input from "../UI/Input";
 import classes from "./User.module.css";
 import { UserType } from "../../store/types";
+import useEditUser from "../../hooks/use-edit-user";
+import DataContext from "../../store/data-context";
 
 interface IUserProps {
   userData: UserType;
-  updateHandler: (userData: UserType) => void;
-  deleteHandler: (id: number) => void;
   chooseUserHandler: () => void;
+  resetAddUserHandler: () => void;
   isChosen: boolean;
 }
+
 const User: React.FC<IUserProps> = ({
   userData,
-  updateHandler,
-  deleteHandler,
   chooseUserHandler,
+  resetAddUserHandler,
   isChosen,
 }) => {
+  const dataContext = useContext(DataContext);
   const [presentOtherData, setPresentOtherData] = useState(false);
-  const nameInputRef = useRef<HTMLInputElement>(null);
-  const emailInputRef = useRef<HTMLInputElement>(null);
-  const streetInputRef = useRef<HTMLInputElement>(null);
-  const cityInputRef = useRef<HTMLInputElement>(null);
-  const zipcodeInputRef = useRef<HTMLInputElement>(null);
+
+  const { nameState, emailState, isFormValid } = useEditUser(
+    userData.name,
+    userData.email
+  );
+  const [addressFields, setAddressFields] = useState({ ...userData.address });
 
   const updateUserHandler = (event: React.FormEvent) => {
     event.preventDefault();
     //get the updated user data from refs
     const updatedUserData = {
       ...userData,
-      name: nameInputRef.current!.value,
-      email: emailInputRef.current!.value,
+      name: nameState.value,
+      email: emailState.value,
       address: {
-        street: streetInputRef.current
-          ? streetInputRef.current?.value
-          : userData.address.street,
-        city: cityInputRef.current
-          ? cityInputRef.current?.value
-          : userData.address.city,
-        zipcode: zipcodeInputRef.current
-          ? zipcodeInputRef.current?.value
-          : userData.address.zipcode,
+        ...addressFields,
       },
     };
     //update the context
-    updateHandler(updatedUserData);
+    dataContext.updateUser(updatedUserData);
   };
 
   const deleteUserHandler = (e: React.MouseEvent) => {
     e.preventDefault();
-    deleteHandler(userData.id);
+    dataContext.deleteUser(userData.id);
+    resetAddUserHandler();
   };
   const UserOtherData = (
     <Card>
       <Input
-        ref={streetInputRef}
         label="Street"
         input={{
           type: "text",
           id: "Street",
-          defaultValue: userData.address.street,
+          value: addressFields.street,
+          onChange: (e) => {
+            setAddressFields({ ...addressFields, street: e.target.value });
+          },
         }}
       />
       <Input
-        ref={cityInputRef}
         label="City"
         input={{
           type: "text",
           id: "City",
-          defaultValue: userData.address.city,
+          defaultValue: addressFields.city,
+          onChange: (e) => {
+            setAddressFields({ ...addressFields, city: e.target.value });
+          },
         }}
       />
       <Input
-        ref={zipcodeInputRef}
         label="Zip Code"
         input={{
           type: "text",
           id: "Zip Code",
-          defaultValue: userData.address.zipcode,
+          defaultValue: addressFields.zipcode,
+          onChange: (e) => {
+            setAddressFields({ ...addressFields, zipcode: e.target.value });
+          },
         }}
       />
     </Card>
@@ -92,14 +94,14 @@ const User: React.FC<IUserProps> = ({
           <p> ID: {userData.id}</p>
 
           <Input
-            ref={nameInputRef}
             label="Name"
-            input={{ type: "text", id: "Name", defaultValue: userData.name }}
+            state={nameState}
+            input={{ type: "text", id: "Name", value: nameState.value }}
           />
           <Input
-            ref={emailInputRef}
             label="Email"
-            input={{ type: "text", id: "Email", defaultValue: userData.email }}
+            state={emailState}
+            input={{ type: "text", id: "Email", value: emailState.value }}
           />
         </div>
         <div className="user__other-data" onClick={chooseUserHandler}>

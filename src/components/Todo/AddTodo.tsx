@@ -21,7 +21,7 @@ interface IAddTodoProps {
 }
 
 const AddTodo: React.FC<IAddTodoProps> = ({ userId, showTodoList }) => {
-  const titleState = useInput(validateTitle, "Please enter a valid title");
+  const titleState = useInput("", validateTitle, "Please enter a valid title");
   const appContext = useContext(AppContext);
 
   const {

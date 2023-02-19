@@ -27,8 +27,8 @@ interface IAddPostProps {
 }
 
 const AddPost: React.FC<IAddPostProps> = ({ userId, showPostsList }) => {
-  const titleState = useInput(validateTitle, "Please enter a valid title");
-  const bodyState = useInput(validateBody, "Please enter a valid body");
+  const titleState = useInput("", validateTitle, "Please enter a valid title");
+  const bodyState = useInput("", validateBody, "Please enter a valid body");
   const appContext = useContext(AppContext);
 
   const {

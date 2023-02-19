@@ -21,11 +21,7 @@ const Users: React.FC = () => {
       <User
         key={user.id}
         userData={user}
-        updateHandler={appContext.updateUser}
-        deleteHandler={(id: number) => {
-          appContext.deleteUser(id);
-          resetAddUserHandler();
-        }}
+        resetAddUserHandler={resetAddUserHandler}
         chooseUserHandler={chooseUserHandler.bind(null, user.id)}
         isChosen={chosenUserId === user.id}
       />

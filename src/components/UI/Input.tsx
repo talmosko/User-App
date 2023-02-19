@@ -11,6 +11,7 @@ interface IInputProps {
     type: string;
     defaultValue?: string;
     value?: string;
+    onChange?: ChangeEventHandler<HTMLInputElement>;
   };
 }
 const Input: React.ForwardRefExoticComponent<
@@ -26,9 +27,9 @@ const Input: React.ForwardRefExoticComponent<
       <label htmlFor={props.input.id}>{props.label}</label>
       <input
         ref={ref}
-        {...props.input}
         onBlur={props.state && props.state.inputBlurHandler}
         onChange={props.state && props.state.valueChangeHandler}
+        {...props.input}
       />
 
       {props.state && props.state.hasError && (

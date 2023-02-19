@@ -5,60 +5,28 @@ import Card from "../UI/Card";
 import Input from "../UI/Input";
 import { z } from "zod";
 import useInput from "../../hooks/use-input";
-
-//validation schemas
-const nameSchema = z.string().min(3).max(20);
-const emailSchema = z.string().email();
-
-//validation functions
-const validateName = (name: string) => {
-  const result = nameSchema.safeParse(name);
-  return result.success;
-};
-const validateEmail = (email: string) => {
-  const result = emailSchema.safeParse(email);
-  return result.success;
-};
+import useEditUser from "../../hooks/use-edit-user";
 
 interface IAddUserProps {
   resetAddUserHandler: () => void;
 }
 
 const AddUser: React.FC<IAddUserProps> = ({ resetAddUserHandler }) => {
-  const nameState = useInput(validateName, "Please enter a valid name");
-  const emailState = useInput(validateEmail, "Please enter a valid email");
+  const { nameState, emailState, isFormValid } = useEditUser();
   const appContext = useContext(AppContext);
-
-  const {
-    value: enteredName,
-    isValid: enteredNameIsValid,
-    reset: resetNameInput,
-  } = nameState;
-
-  const {
-    value: enteredEmail,
-    isValid: enteredEmailIsValid,
-    reset: resetEmailInput,
-  } = emailState;
-
-  let formIsValid = false;
-
-  if (enteredNameIsValid && enteredEmailIsValid) {
-    formIsValid = true;
-  }
 
   /* Handlers */
   const addUserHandler = (event: React.FormEvent) => {
     event.preventDefault();
     const userData = {
-      name: enteredName,
-      email: enteredEmail,
+      name: nameState.value,
+      email: emailState.value,
     };
     //validate the user data
-    if (formIsValid) {
+    if (isFormValid) {
       appContext.addUser(userData);
-      resetNameInput();
-      resetEmailInput();
+      nameState.reset();
+      emailState.reset();
       resetAddUserHandler();
     } else return;
   };
@@ -74,7 +42,7 @@ const AddUser: React.FC<IAddUserProps> = ({ resetAddUserHandler }) => {
             input={{
               type: "text",
               id: "name",
-              value: enteredName,
+              value: nameState.value,
             }}
           />
           <Input
@@ -83,7 +51,7 @@ const AddUser: React.FC<IAddUserProps> = ({ resetAddUserHandler }) => {
             input={{
               type: "email",
               id: "email",
-              value: enteredEmail,
+              value: emailState.value,
             }}
           />
 
