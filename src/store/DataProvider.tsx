@@ -2,6 +2,7 @@ import { Dispatch } from "react";
 import AppContext, { IDataContext, IDataReducerState } from "./data-context";
 import { useReducer } from "react";
 import {
+  InsertedPostType,
   InsertedTodoType,
   InsertedUserType,
   PostType,
@@ -24,7 +25,9 @@ type TDataReducerAction =
       type: "DELETE_USER";
       id: number;
     }
-  | { type: "ADD_TODO"; todo: InsertedTodoType };
+  | { type: "ADD_TODO"; todo: InsertedTodoType }
+  | { type: "COMPLETED_TODO"; todoId: number }
+  | { type: "ADD_POST"; post: InsertedPostType };
 
 const dataReducer = (
   state: IDataReducerState,
@@ -83,6 +86,31 @@ const dataReducer = (
       updateMessage: new String("Todo Added"),
     };
   }
+  if (action.type === "COMPLETED_TODO") {
+    const updatedTodos = state.todos.map((todo) => {
+      if (todo.id === action.todoId) {
+        return { ...todo, completed: true };
+      }
+      return todo;
+    });
+    return {
+      ...state,
+      todos: updatedTodos,
+      updateMessage: new String("Todo Completed"),
+    };
+  }
+
+  if (action.type === "ADD_POST") {
+    const newPost: PostType = {
+      ...action.post,
+      id: state.posts.length + 1,
+    };
+    return {
+      ...state,
+      posts: [...state.posts, newPost],
+      updateMessage: new String("Post Added"),
+    };
+  }
 
   return state;
 };
@@ -118,6 +146,9 @@ const DataProvider: React.FC<DataProviderProps> = (props) => {
     Dispatch<TDataReducerAction>
   ] = useReducer(dataReducer, defaultState);
 
+  const getAllUsers = () => {
+    return currentState.users;
+  };
   const updateUserHandler = (user: UserType) => {
     dispatchAction({ type: "UPDATE_USER", user });
   };
@@ -133,12 +164,35 @@ const DataProvider: React.FC<DataProviderProps> = (props) => {
   const addTodoHandler = (todo: InsertedTodoType) => {
     dispatchAction({ type: "ADD_TODO", todo });
   };
+
+  const markCompletedTodoHandler = (id: number) => {
+    dispatchAction({ type: "COMPLETED_TODO", todoId: id });
+  };
+
+  const getTodosForUser = (userId: number) => {
+    return currentState.todos.filter((todo) => todo.userId === userId);
+  };
+
+  const addPost = (post: InsertedPostType) => {
+    dispatchAction({ type: "ADD_POST", post });
+  };
+
+  const getPostsForUser = (userId: number) => {
+    return currentState.posts.filter((post) => post.userId === userId);
+  };
+
   const appContext = {
-    ...currentState,
+    updateError: currentState.updateError,
+    updateMessage: currentState.updateMessage,
+    getAllUsers: getAllUsers,
     updateUser: updateUserHandler,
     deleteUser: deleteUserHandler,
     addUser: addUserHandler,
     addTodo: addTodoHandler,
+    markCompletedTodo: markCompletedTodoHandler,
+    getTodosForUser: getTodosForUser,
+    addPost: addPost,
+    getPostsForUser: getPostsForUser,
   };
   return (
     <AppContext.Provider value={appContext}>

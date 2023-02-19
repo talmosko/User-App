@@ -15,9 +15,16 @@ export interface InsertedTodoType {
   title: string;
   userId: number;
 }
-export type TodoType = {
+export interface TodoType extends InsertedTodoType {
   id: number;
   completed: boolean;
-};
+}
 
-export type PostType = {};
+export interface InsertedPostType {
+  title: string;
+  body: string;
+  userId: number;
+}
+export interface PostType extends InsertedPostType {
+  id: number;
+}

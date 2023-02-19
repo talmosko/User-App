@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import useUsersAction from "../../hooks/use-users-action";
 import AppContext from "../../store/data-context";
-import AddTodo from "../Todo/AddTodo";
 import Button from "../UI/Button";
+import ActionsForUser from "./ActionsForUser";
 import AddUser from "./AddUser";
 import User from "./User";
 import classes from "./Users.module.css";
@@ -12,11 +12,11 @@ const Users: React.FC = () => {
     isAddUserAction,
     chooseUserHandler,
     promptAddUserHandler,
-    resetHandler,
+    resetHandler: resetAddUserHandler,
   } = useUsersAction();
 
   const appContext = useContext(AppContext);
-  const usersCards = appContext.users.map((user) => {
+  const usersCards = appContext.getAllUsers().map((user) => {
     return (
       <User
         key={user.id}
@@ -24,7 +24,7 @@ const Users: React.FC = () => {
         updateHandler={appContext.updateUser}
         deleteHandler={(id: number) => {
           appContext.deleteUser(id);
-          resetHandler();
+          resetAddUserHandler();
         }}
         chooseUserHandler={chooseUserHandler.bind(null, user.id)}
         isChosen={chosenUserId === user.id}
@@ -39,7 +39,9 @@ const Users: React.FC = () => {
           <Button
             button={{
               onClick: () =>
-                !isAddUserAction ? promptAddUserHandler() : resetHandler(),
+                !isAddUserAction
+                  ? promptAddUserHandler()
+                  : resetAddUserHandler(),
             }}
           >
             Add User
@@ -48,9 +50,11 @@ const Users: React.FC = () => {
         {usersCards}
       </div>
       <div className={classes["users__actions"]}>
-        {isAddUserAction && <AddUser resetHandler={resetHandler} />}
+        {isAddUserAction && (
+          <AddUser resetAddUserHandler={resetAddUserHandler} />
+        )}
         {!isAddUserAction && chosenUserId !== -1 && (
-          <AddTodo userId={chosenUserId} resetHandler={() => resetHandler} />
+          <ActionsForUser userId={chosenUserId} />
         )}
       </div>
     </div>

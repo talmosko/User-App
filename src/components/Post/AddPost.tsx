@@ -8,6 +8,7 @@ import useInput from "../../hooks/use-input";
 
 //validation schemas
 const TitleSchema = z.string().min(3);
+const BodySchema = z.string().min(3);
 
 //validation functions
 const validateTitle = (name: string) => {
@@ -15,13 +16,19 @@ const validateTitle = (name: string) => {
   return result.success;
 };
 
-interface IAddTodoProps {
+const validateBody = (name: string) => {
+  const result = BodySchema.safeParse(name);
+  return result.success;
+};
+
+interface IAddPostProps {
   userId: number;
-  showTodoList: () => void;
+  showPostsList: () => void;
 }
 
-const AddTodo: React.FC<IAddTodoProps> = ({ userId, showTodoList }) => {
+const AddPost: React.FC<IAddPostProps> = ({ userId, showPostsList }) => {
   const titleState = useInput(validateTitle, "Please enter a valid title");
+  const bodyState = useInput(validateBody, "Please enter a valid body");
   const appContext = useContext(AppContext);
 
   const {
@@ -30,18 +37,27 @@ const AddTodo: React.FC<IAddTodoProps> = ({ userId, showTodoList }) => {
     reset: resetTitleInput,
   } = titleState;
 
+  const {
+    value: enteredBody,
+    isValid: enteredBodyIsValid,
+    reset: resetBodyInput,
+  } = bodyState;
+
+  const isFormValid = enteredTitleIsValid && enteredBodyIsValid;
+
   /* Handlers */
-  const addTodoHandler = (event: React.FormEvent) => {
+  const addPostHandler = (event: React.FormEvent) => {
     event.preventDefault();
-    const todoData = {
+    const postData = {
       title: enteredTitle,
+      body: enteredBody,
       userId: userId,
     };
     //validate the user data
-    if (enteredTitleIsValid) {
-      appContext.addTodo(todoData);
+    if (isFormValid) {
+      appContext.addPost(postData);
       resetTitleInput();
-      showTodoList();
+      showPostsList();
     } else return;
   };
 
@@ -49,7 +65,7 @@ const AddTodo: React.FC<IAddTodoProps> = ({ userId, showTodoList }) => {
     <>
       <h1>New Todo - User {userId}</h1>
       <Card className="card">
-        <form onSubmit={addTodoHandler}>
+        <form onSubmit={addPostHandler}>
           <Input
             label="Title"
             state={titleState}
@@ -59,9 +75,18 @@ const AddTodo: React.FC<IAddTodoProps> = ({ userId, showTodoList }) => {
               value: enteredTitle,
             }}
           />
+          <Input
+            label="Body"
+            state={bodyState}
+            input={{
+              type: "text",
+              id: "body",
+              value: enteredBody,
+            }}
+          />
 
           <div className="actions">
-            <Button button={{ type: "button", onClick: showTodoList }}>
+            <Button button={{ type: "button", onClick: showPostsList }}>
               Cancel
             </Button>
             <Button button={{ type: "submit" }}>Add</Button>
@@ -72,4 +97,4 @@ const AddTodo: React.FC<IAddTodoProps> = ({ userId, showTodoList }) => {
   );
 };
 
-export default AddTodo;
+export default AddPost;

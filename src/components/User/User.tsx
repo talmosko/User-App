@@ -3,7 +3,6 @@ import Button from "../UI/Button";
 import Card from "../UI/Card";
 import Input from "../UI/Input";
 import classes from "./User.module.css";
-import AppContext from "../../store/data-context";
 import { UserType } from "../../store/types";
 
 interface IUserProps {
@@ -121,7 +120,7 @@ const User: React.FC<IUserProps> = ({
           </Button>
           {presentOtherData && UserOtherData}
         </div>
-        <div className={"form-actions"} onClick={() => {}}>
+        <div className={"actions"} onClick={() => {}}>
           <Button button={{ type: "submit" }}>Update</Button>
           <Button button={{ onClick: deleteUserHandler }}>Delete</Button>
         </div>

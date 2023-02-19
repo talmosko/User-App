@@ -21,10 +21,10 @@ const validateEmail = (email: string) => {
 };
 
 interface IAddUserProps {
-  resetHandler: () => void;
+  resetAddUserHandler: () => void;
 }
 
-const AddUser: React.FC<IAddUserProps> = ({ resetHandler }) => {
+const AddUser: React.FC<IAddUserProps> = ({ resetAddUserHandler }) => {
   const nameState = useInput(validateName, "Please enter a valid name");
   const emailState = useInput(validateEmail, "Please enter a valid email");
   const appContext = useContext(AppContext);
@@ -59,7 +59,7 @@ const AddUser: React.FC<IAddUserProps> = ({ resetHandler }) => {
       appContext.addUser(userData);
       resetNameInput();
       resetEmailInput();
-      resetHandler();
+      resetAddUserHandler();
     } else return;
   };
 
@@ -87,11 +87,11 @@ const AddUser: React.FC<IAddUserProps> = ({ resetHandler }) => {
             }}
           />
 
-          <div className="form-actions">
-            <Button button={{ type: "submit" }}>Add User</Button>
-            <Button button={{ type: "button", onClick: resetHandler }}>
+          <div className="actions">
+            <Button button={{ type: "button", onClick: resetAddUserHandler }}>
               Cancel
             </Button>
+            <Button button={{ type: "submit" }}>Add User</Button>
           </div>
         </form>
       </Card>
