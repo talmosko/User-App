@@ -1,11 +1,14 @@
 import { useContext, useEffect, useState } from "react";
+import { useSearch } from "../../hooks/use-search";
 import useUsersAction from "../../hooks/use-users-action";
 import AppContext from "../../store/data-context";
+import { UserType } from "../../store/types";
 import Button from "../UI/Button";
+import Input from "../UI/Input";
 import ActionsForUser from "./ActionsForUser";
 import AddUser from "./User/AddUser";
 import User from "./User/User";
-import classes from "./Users.module.css";
+import classes from "./UsersList.module.css";
 const UsersList: React.FC = () => {
   const {
     chosenUserId,
@@ -19,7 +22,14 @@ const UsersList: React.FC = () => {
   useEffect(() => {
     appContext.getAllDataFromAPI();
   }, []);
-  const usersCards = appContext.getAllUsers().map((user) => {
+
+  const {
+    onChange: onSearchChange,
+    search: searchTerm,
+    filtered: filteredUsers,
+  } = useSearch<UserType>(["name", "email"], appContext.getAllUsers());
+
+  const usersCards = filteredUsers.map((user) => {
     return (
       <User
         key={user.id}
@@ -32,9 +42,18 @@ const UsersList: React.FC = () => {
   });
 
   return (
-    <div className={classes["users__main-grid"]}>
-      <div className={classes["users__details"]}>
-        <div className="main-actions">
+    <div className={classes["users-list__main-grid"]}>
+      <div className={classes["users-list__details"]}>
+        <div className="header">
+          <Input
+            label="Search"
+            input={{
+              type: "text",
+              id: "search",
+              value: searchTerm,
+              onChange: onSearchChange,
+            }}
+          />
           <Button
             button={{
               onClick: () =>
