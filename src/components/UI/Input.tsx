@@ -14,9 +14,7 @@ interface IInputProps {
     onChange?: ChangeEventHandler<HTMLInputElement>;
   };
 }
-const Input: React.ForwardRefExoticComponent<
-  IInputProps & React.RefAttributes<HTMLInputElement>
-> = React.forwardRef((props, ref) => {
+const Input: React.FC<IInputProps> = (props) => {
   const inputClasses =
     props.state && props.state.hasError
       ? `${classes["form-control"]} ${classes["invalid"]}`
@@ -26,7 +24,6 @@ const Input: React.ForwardRefExoticComponent<
     <div className={inputClasses}>
       <label htmlFor={props.input.id}>{props.label}</label>
       <input
-        ref={ref}
         onBlur={props.state && props.state.inputBlurHandler}
         onChange={props.state && props.state.valueChangeHandler}
         {...props.input}
@@ -39,6 +36,6 @@ const Input: React.ForwardRefExoticComponent<
       )}
     </div>
   );
-});
+};
 
 export default Input;

@@ -1,8 +1,8 @@
 import { useState } from "react";
-
+import { UserType } from "../store/types";
 const useUsersAction = () => {
-  const [isAddUserAction, setIsAddUserAction] = useState(false);
-  const [chosenUserId, setChosenUserId] = useState(-1);
+  const [isAddUserAction, setIsAddUserAction] = useState<boolean>(false);
+  const [chosenUserId, setChosenUserId] = useState<UserType["id"]>(-1);
 
   const reset = () => {
     setIsAddUserAction(false);

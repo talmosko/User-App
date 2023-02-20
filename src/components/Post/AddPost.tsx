@@ -57,6 +57,7 @@ const AddPost: React.FC<IAddPostProps> = ({ userId, showPostsList }) => {
     if (isFormValid) {
       appContext.addPost(postData);
       resetTitleInput();
+      resetBodyInput();
       showPostsList();
     } else return;
   };

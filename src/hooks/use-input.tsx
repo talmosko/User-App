@@ -15,8 +15,8 @@ const useInput = (
   validateValue: (val: string) => boolean,
   errorMessage: string
 ) => {
-  const [isTouched, setIsTouched] = useState(false);
-  const [value, setValue] = useState(initialValue);
+  const [isTouched, setIsTouched] = useState<boolean>(false);
+  const [value, setValue] = useState<string>(initialValue);
 
   const valueIsValid = validateValue(value);
   const hasError = !valueIsValid && isTouched;

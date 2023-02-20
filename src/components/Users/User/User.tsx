@@ -40,7 +40,7 @@ const User: React.FC<IUserProps> = ({
       },
     };
     //update the context
-    dataContext.updateUser(updatedUserData);
+    if (isFormValid) dataContext.updateUser(updatedUserData);
   };
 
   const deleteUserHandler = (e: React.MouseEvent) => {
