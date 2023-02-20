@@ -3,10 +3,10 @@ import useUsersAction from "../../hooks/use-users-action";
 import AppContext from "../../store/data-context";
 import Button from "../UI/Button";
 import ActionsForUser from "./ActionsForUser";
-import AddUser from "./AddUser";
-import User from "./User";
+import AddUser from "./User/AddUser";
+import User from "./User/User";
 import classes from "./Users.module.css";
-const Users: React.FC = () => {
+const UsersList: React.FC = () => {
   const {
     chosenUserId,
     isAddUserAction,
@@ -57,4 +57,4 @@ const Users: React.FC = () => {
   );
 };
 
-export default Users;
+export default UsersList;

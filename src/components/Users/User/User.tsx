@@ -1,11 +1,11 @@
 import React, { useContext, useRef, useState } from "react";
-import Button from "../UI/Button";
-import Card from "../UI/Card";
-import Input from "../UI/Input";
+import Button from "../../UI/Button";
+import Card from "../../UI/Card";
+import Input from "../../UI/Input";
 import classes from "./User.module.css";
-import { UserType } from "../../store/types";
-import useEditUser from "../../hooks/use-edit-user";
-import DataContext from "../../store/data-context";
+import { UserType } from "../../../store/types";
+import useEditUser from "../../../hooks/use-edit-user";
+import DataContext from "../../../store/data-context";
 
 interface IUserProps {
   userData: UserType;

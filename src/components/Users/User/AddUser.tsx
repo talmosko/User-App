@@ -1,11 +1,9 @@
 import { useContext, useState } from "react";
-import AppContext from "../../store/data-context";
-import Button from "../UI/Button";
-import Card from "../UI/Card";
-import Input from "../UI/Input";
-import { z } from "zod";
-import useInput from "../../hooks/use-input";
-import useEditUser from "../../hooks/use-edit-user";
+import AppContext from "../../../store/data-context";
+import Button from "../../UI/Button";
+import Card from "../../UI/Card";
+import Input from "../../UI/Input";
+import useEditUser from "../../../hooks/use-edit-user";
 
 interface IAddUserProps {
   resetAddUserHandler: () => void;

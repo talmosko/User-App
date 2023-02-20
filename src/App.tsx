@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import "./App.css";
 import Modal from "./components/UI/Modal";
-import Users from "./components/User/Users";
+import UsersList from "./components/Users/UsersList";
 import DataContext from "./store/data-context";
 function App() {
   const dataProvider = useContext(DataContext);
@@ -26,7 +26,7 @@ function App() {
         </Modal>
       )}
       <main>
-        <Users />
+        <UsersList />
       </main>
     </>
   );
