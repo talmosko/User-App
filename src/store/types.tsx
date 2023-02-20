@@ -9,6 +9,7 @@ export interface UserType extends InsertedUserType {
     city: string;
     zipcode: string;
   };
+  hasUncompletedTodos?: boolean;
 }
 
 export interface InsertedTodoType {

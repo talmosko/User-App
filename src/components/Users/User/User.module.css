@@ -1,0 +1,15 @@
+
+.user-card{
+    cursor: pointer;
+  }
+  
+  .user-card--chosen
+  {
+      background-color: #eeedc6;
+      cursor: default;
+  }
+  
+  .user-card--uncompleted
+  {
+    border:red 1px solid;
+  }

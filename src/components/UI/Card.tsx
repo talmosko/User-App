@@ -7,9 +7,7 @@ interface CardProps {
 const Card: React.FC<CardProps> = (props) => {
   return (
     <div
-      className={`${classes.card} ${
-        props.className && classes[props.className]
-      }`}
+      className={`${classes.card} ${props.className}`}
       onClick={props.onClick}
     >
       {props.children}

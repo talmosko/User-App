@@ -6,7 +6,6 @@ import classes from "./User.module.css";
 import { UserType } from "../../../store/types";
 import useEditUser from "../../../hooks/use-edit-user";
 import DataContext from "../../../store/data-context";
-
 interface IUserProps {
   userData: UserType;
   chooseUserHandler: () => void;
@@ -87,8 +86,12 @@ const User: React.FC<IUserProps> = ({
     </Card>
   );
 
+  const className = `${classes["user-card"]} ${
+    userData.hasUncompletedTodos ? classes["user-card--uncompleted"] : ""
+  } ${isChosen ? classes["user-card--chosen"] : ""}`;
+
   return (
-    <Card className={isChosen ? "card--chosen-user" : "card--user"}>
+    <Card className={className}>
       <form className={classes["user__form"]} onSubmit={updateUserHandler}>
         <div className="user__data" onClick={chooseUserHandler}>
           <p> ID: {userData.id}</p>

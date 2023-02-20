@@ -45,9 +45,19 @@ const dataReducer = (
   action: TDataReducerAction
 ): IDataReducerState => {
   if (action.type === "GET_DATA") {
+    const users = action.users.map((user) => {
+      const hasUncompletedTodos = action.todos.some(
+        (todo) => todo.userId === user.id && !todo.completed
+      );
+      return {
+        ...user,
+        hasUncompletedTodos,
+      };
+    });
+
     return {
       ...state,
-      users: action.users,
+      users: users,
       todos: action.todos,
       posts: action.posts,
     };
@@ -85,9 +95,17 @@ const dataReducer = (
 
   if (action.type === "DELETE_USER") {
     const updatedUsers = state.users.filter((user) => user.id !== action.id);
+    const updatedTodos = state.todos.filter(
+      (todo) => todo.userId !== action.id
+    );
+    const updatedPosts = state.posts.filter(
+      (post) => post.userId !== action.id
+    );
     return {
       ...state,
       users: updatedUsers,
+      todos: updatedTodos,
+      posts: updatedPosts,
       updateError: undefined,
       updateMessage: new String("User Deleted"),
     };
@@ -99,9 +117,16 @@ const dataReducer = (
       id: state.todos.length + 1,
       completed: false,
     };
+    const updatedUsers = state.users.map((user) => {
+      if (user.id === action.todo.userId) {
+        return { ...user, hasUncompletedTodos: true };
+      }
+      return user;
+    });
     return {
       ...state,
       todos: [...state.todos, newTodo],
+      users: updatedUsers,
       updateMessage: new String("Todo Added"),
     };
   }
@@ -112,9 +137,16 @@ const dataReducer = (
       }
       return todo;
     });
+    const updatedUsers = state.users.map((user) => {
+      const hasUncompletedTodos = updatedTodos.some(
+        (todo) => todo.userId === user.id && !todo.completed
+      );
+      return { ...user, hasUncompletedTodos };
+    });
     return {
       ...state,
       todos: updatedTodos,
+      users: updatedUsers,
       updateMessage: new String("Todo Completed"),
     };
   }
