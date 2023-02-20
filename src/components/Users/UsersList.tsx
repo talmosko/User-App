@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useUsersAction from "../../hooks/use-users-action";
 import AppContext from "../../store/data-context";
 import Button from "../UI/Button";
@@ -16,6 +16,9 @@ const UsersList: React.FC = () => {
   } = useUsersAction();
 
   const appContext = useContext(AppContext);
+  useEffect(() => {
+    appContext.getAllDataFromAPI();
+  }, []);
   const usersCards = appContext.getAllUsers().map((user) => {
     return (
       <User

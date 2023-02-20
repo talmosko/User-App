@@ -9,10 +9,21 @@ import {
   TodoType,
   UserType,
 } from "./types";
+import {
+  getAllPostsFromAPI,
+  getAllTodosFromAPI,
+  getAllUsersFromAPI,
+} from "./api-data-gateway";
 
 /* REDUCER */
 
 type TDataReducerAction =
+  | {
+      type: "GET_DATA";
+      users: UserType[];
+      todos: TodoType[];
+      posts: PostType[];
+    }
   | {
       type: "ADD_USER";
       user: InsertedUserType;
@@ -33,6 +44,14 @@ const dataReducer = (
   state: IDataReducerState,
   action: TDataReducerAction
 ): IDataReducerState => {
+  if (action.type === "GET_DATA") {
+    return {
+      ...state,
+      users: action.users,
+      todos: action.todos,
+      posts: action.posts,
+    };
+  }
   if (action.type === "ADD_USER") {
     const newUser: UserType = {
       ...action.user,
@@ -118,18 +137,7 @@ const dataReducer = (
 /* PROVIDER */
 
 const defaultState = {
-  users: [
-    {
-      id: 1,
-      name: "Leanne Graham",
-      email: "Sincere@april.biz",
-      address: {
-        street: "Kulas Light",
-        city: "Gwenborough",
-        zipcode: "92998-3874",
-      },
-    },
-  ],
+  users: [],
   todos: [],
   posts: [],
   updateError: undefined,
@@ -145,6 +153,13 @@ const DataProvider: React.FC<DataProviderProps> = (props) => {
     IDataReducerState,
     Dispatch<TDataReducerAction>
   ] = useReducer(dataReducer, defaultState);
+
+  const getAllDataFromAPI = async () => {
+    const users = await getAllUsersFromAPI();
+    const todos = await getAllTodosFromAPI();
+    const posts = await getAllPostsFromAPI();
+    dispatchAction({ type: "GET_DATA", users, todos, posts });
+  };
 
   const getAllUsers = () => {
     return currentState.users;
@@ -184,6 +199,7 @@ const DataProvider: React.FC<DataProviderProps> = (props) => {
   const appContext = {
     updateError: currentState.updateError,
     updateMessage: currentState.updateMessage,
+    getAllDataFromAPI: getAllDataFromAPI,
     getAllUsers: getAllUsers,
     updateUser: updateUserHandler,
     deleteUser: deleteUserHandler,

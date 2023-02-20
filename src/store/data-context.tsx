@@ -18,6 +18,7 @@ export interface IDataReducerState {
 export interface IDataContext {
   updateError: Error | undefined;
   updateMessage: String | undefined;
+  getAllDataFromAPI: () => void;
   getAllUsers: () => UserType[];
   updateUser: (user: UserType) => void;
   deleteUser: (id: number) => void;
@@ -32,6 +33,7 @@ export interface IDataContext {
 const DataContext: React.Context<IDataContext> = React.createContext({
   updateError: undefined,
   updateMessage: undefined,
+  getAllDataFromAPI: () => {},
   getAllUsers: () => {
     return [];
   },
